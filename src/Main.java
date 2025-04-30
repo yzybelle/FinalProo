@@ -10,7 +10,7 @@ public class Main {
        window.setTitle("2D Adventure");
        GamePanel gamePanel = new GamePanel();
        window.add(gamePanel);
-       window.pack(); // This allows the woindow to be sized to fit the gamepanel
+       window.pack(); // This allows the window to be sized to fit the gamepanel
        window.setLocationRelativeTo(null);
        window.setVisible(true);
        gamePanel.startGameThread();

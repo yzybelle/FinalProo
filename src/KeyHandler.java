@@ -11,36 +11,36 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-    int code = e.getKeyCode(); //This returns an integer associated with the key
-        // example: 8 = backspace, 10 = enter
-        if(code ==KeyEvent.VK_W){
+        int code = e.getKeyCode();
+        if (code == KeyEvent.VK_W) {
             upPressed = true;
         }
-        if(code ==KeyEvent.VK_A){
-            downPressed = true;
-        }
-        if(code ==KeyEvent.VK_S){
+        if (code == KeyEvent.VK_A) {
             leftPressed = true;
         }
-        if(code ==KeyEvent.VK_D){
+        if (code == KeyEvent.VK_S) {
+            downPressed = true;
+        }
+        if (code == KeyEvent.VK_D) {
             rightPressed = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code  = e.getKeyCode();
-        if(code ==KeyEvent.VK_W){
+        int code = e.getKeyCode();
+        if (code == KeyEvent.VK_W) {
             upPressed = false;
         }
-        if(code ==KeyEvent.VK_A){
-            downPressed = false;
-        }
-        if(code ==KeyEvent.VK_S){
+        if (code == KeyEvent.VK_A) {
             leftPressed = false;
         }
-        if(code ==KeyEvent.VK_D){
+        if (code == KeyEvent.VK_S) {
+            downPressed = false;
+        }
+        if (code == KeyEvent.VK_D) {
             rightPressed = false;
         }
     }
+
 }
