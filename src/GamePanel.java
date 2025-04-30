@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.MAGENTA); //Sets BackGround Color
         this.setDoubleBuffered(true); //Better rendering??? idk
         this.setFocusable((true)); //sets GamePanel to be "focused" to receive key input
+        this.addKeyListener(keyH);
     }
 
     public void startGameThread(){
@@ -57,14 +58,14 @@ public class GamePanel extends JPanel implements Runnable {
     }
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update(){
-      if (keyH.upPressed==true){
+      if (keyH.upPressed){
           playerY-=playerSpeed;
       }
-      else if (keyH.downPressed == true) {
+      else if (keyH.downPressed) {
           playerY+= playerSpeed;
-      } else if (keyH.rightPressed == true) {
+      } else if (keyH.rightPressed) {
           playerX+= playerSpeed;
-      } else if (keyH.leftPressed == true) {
+      } else if (keyH.leftPressed) {
           playerX-=playerSpeed;
       }
     }
