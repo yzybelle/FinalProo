@@ -1,3 +1,7 @@
+package main;
+
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,7 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16; //16x16 tile
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale; //48x48 tile
+    public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
 
@@ -19,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();
     //TO create time, or a game clock we use a class called Thread
     Thread gameThread;
-
+    Player player = new Player(this,keyH);
     // Set player's default position
 
     int playerX = 100;
@@ -54,28 +58,33 @@ public class GamePanel extends JPanel implements Runnable {
             //Draw the screen with updated information
             update();
             repaint(); // This calls paintComponent
+
+            try {
+                double remainingTime = nextDrawTime-System.nanoTime();
+                remainingTime = remainingTime/1000000;
+
+                if(remainingTime<0){
+                    remainingTime = 0;
+                }
+
+                Thread.sleep((long)remainingTime);
+
+                nextDrawTime += drawInterval;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update(){
-      if (keyH.upPressed){
-          playerY-=playerSpeed;
-      }
-      else if (keyH.downPressed) {
-          playerY+= playerSpeed;
-      } else if (keyH.rightPressed) {
-          playerX+= playerSpeed;
-      } else if (keyH.leftPressed) {
-          playerX-=playerSpeed;
-      }
+        player.update();
     }
     //This is a built in method in java where you can draw in Java
     // Graphics class draws objects on screen
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; // This changes Graphics to graphics 2d which allows for more functions
-        g2.setColor(Color.GRAY);
-        g2.fillRect(playerX,playerY,tileSize,tileSize);
+        player.draw(g2);
         g2.dispose();
     }
 }
