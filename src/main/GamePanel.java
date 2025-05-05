@@ -1,5 +1,6 @@
 package main;
 
+import entity.AttackShips;
 import entity.Player;
 
 import javax.swing.*;
@@ -16,13 +17,14 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 12;
 
     final int screenWidth = tileSize*maxScreenCol; //768 pixels
-    final int screenHeight = tileSize * maxScreenRow; //576 pixels
+    public final int screenHeight = tileSize * maxScreenRow; //576 pixels
     //FPS
     int FPS = 60;
 
     KeyHandler keyH = new KeyHandler();
     //TO create time, or a game clock we use a class called Thread
     Thread gameThread;
+AttackShips attackShips = new AttackShips(this);
     Player player = new Player(this,keyH);
     // Set player's default position
 
@@ -36,6 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true); //Better rendering??? idk
         this.setFocusable((true)); //sets GamePanel to be "focused" to receive key input
         this.addKeyListener(keyH);
+        this.requestFocusInWindow();
     }
 
     public void startGameThread(){
@@ -77,7 +80,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update(){
+        int check = 0;
         player.update();
+        attackShips.update(check);
     }
     //This is a built in method in java where you can draw in Java
     // Graphics class draws objects on screen
@@ -85,6 +90,9 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; // This changes Graphics to graphics 2d which allows for more functions
         player.draw(g2);
+        attackShips.draw(g2);
         g2.dispose();
+
+
     }
 }
