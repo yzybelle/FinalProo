@@ -2,6 +2,7 @@ package main;
 
 import entity.AttackShips;
 import entity.Player;
+import entity.Projectiles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,10 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();
     //TO create time, or a game clock we use a class called Thread
     Thread gameThread;
-AttackShips attackShips = new AttackShips(this);
+
+    AttackShips attackShipTwo = new AttackShips(this, 300,600);
+    AttackShips attackShipOne = new AttackShips(this, 500,600);
+    Projectiles attackSOP = new Projectiles(this, attackShipOne);
     Player player = new Player(this,keyH);
     // Set player's default position
 
@@ -81,7 +85,9 @@ AttackShips attackShips = new AttackShips(this);
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update(){
         player.update();
-        attackShips.update();
+        attackShipOne.update();
+        attackSOP.update();
+        attackShipTwo.update();
     }
     //This is a built in method in java where you can draw in Java
     // Graphics class draws objects on screen
@@ -89,7 +95,9 @@ AttackShips attackShips = new AttackShips(this);
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g; // This changes Graphics to graphics 2d which allows for more functions
         player.draw(g2);
-        attackShips.draw(g2);
+        attackShipOne.draw(g2,Color.green);
+        attackSOP.draw(g2, attackShipOne,Color.green );
+        attackShipTwo.draw(g2, Color.yellow);
         g2.dispose();
 
 

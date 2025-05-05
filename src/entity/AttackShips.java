@@ -11,11 +11,15 @@ public class AttackShips extends Entity {
 
     public AttackShips(GamePanel gp){
         this.gp = gp;
-        setDefaultValues();
+        setDefaultValues(300, 600);
     }
-    public void setDefaultValues(){
-        x = 300;
-        y = 200;
+    public AttackShips(GamePanel gp, int x, int y){
+        this.gp = gp;
+        setDefaultValues(x,y);
+    }
+    public void setDefaultValues(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 
     public void update(){
@@ -34,14 +38,11 @@ public class AttackShips extends Entity {
 
     }
 
-    public void draw(Graphics2D g2){
-        g2.setColor(Color.GRAY);
+    public void draw(Graphics2D g2, Color color){
+        g2.setColor(color);
         g2.fillRect(x,y,gp.tileSize,gp.tileSize);
 
     }
-
-
-
 
 
 
