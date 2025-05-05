@@ -7,6 +7,7 @@ import java.awt.*;
 public class AttackShips extends Entity {
     GamePanel gp;
     private int check = 0;
+    private int health;
 
 
     public AttackShips(GamePanel gp){
@@ -15,6 +16,7 @@ public class AttackShips extends Entity {
     }
     public AttackShips(GamePanel gp, int x, int y){
         this.gp = gp;
+        health = 100;
         setDefaultValues(x,y);
     }
     public void setDefaultValues(int x, int y){

@@ -86,7 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void update(){
         player.update();
         attackShipOne.update();
-        attackSOP.update();
+        attackSOP.update(2);
         attackShipTwo.update();
     }
     //This is a built in method in java where you can draw in Java
