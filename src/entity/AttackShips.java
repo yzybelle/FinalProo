@@ -6,6 +6,7 @@ import java.awt.*;
 
 public class AttackShips extends Entity {
     GamePanel gp;
+    private int check = 0;
 
 
     public AttackShips(GamePanel gp){
@@ -17,7 +18,7 @@ public class AttackShips extends Entity {
         y = 200;
     }
 
-    public void update(int check){
+    public void update(){
         if (check == 0) {
             y -= 2;
             if (y < 0) {

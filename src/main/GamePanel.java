@@ -80,9 +80,8 @@ AttackShips attackShips = new AttackShips(this);
     }
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update(){
-        int check = 0;
         player.update();
-        attackShips.update(check);
+        attackShips.update();
     }
     //This is a built in method in java where you can draw in Java
     // Graphics class draws objects on screen
