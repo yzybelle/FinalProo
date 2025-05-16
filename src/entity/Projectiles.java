@@ -3,7 +3,6 @@ package entity;
 import main.GamePanel;
 
 import java.awt.*;
-import java.util.concurrent.TimeUnit;
 
 public class Projectiles extends Entity {
     GamePanel gp;
@@ -11,25 +10,19 @@ public class Projectiles extends Entity {
     int shipYPos;
 
 
-    public Projectiles(GamePanel gp, AttackShips temp) {
+    public Projectiles(GamePanel gp, AttackShips attackShipOne) {
         this.gp = gp;
-        this.shipXPos = temp.x;
-        this.shipYPos = temp.y;
-        setDefaultValues(temp.x, temp.y);
+        this.speed = 4;
+
     }
 
-    public void setDefaultValues(int x, int y) {
-        this.x = x;
-        this.y = y;
+
+    public void update() {
+        x -= speed;
     }
 
-    public void update(double deltaTime) {
-        x -= speed * 2 * deltaTime;
-    }
-
-    public void draw(Graphics2D g2, AttackShips temp, Color color) {
+    public void draw(Graphics2D g2, Color color) {
         g2.setColor(color);
-        g2.fillRect(shipXPos, shipYPos, gp.tileSize / 2, gp.tileSize / 2);
-
+        g2.fillRect(x, y, gp.tileSize / 2, gp.tileSize / 2);
     }
 }

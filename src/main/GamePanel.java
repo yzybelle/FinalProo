@@ -86,7 +86,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void update(){
         player.update();
         attackShipOne.update();
-        attackSOP.update(2);
+        attackSOP.update();
+        System.out.println("AttackSOP XPOS:" + attackSOP.x);
         attackShipTwo.update();
     }
     //This is a built in method in java where you can draw in Java
@@ -96,7 +97,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g; // This changes Graphics to graphics 2d which allows for more functions
         player.draw(g2);
         attackShipOne.draw(g2,Color.green);
-        attackSOP.draw(g2, attackShipOne,Color.green );
+        attackSOP.draw(g2, Color.green);
         attackShipTwo.draw(g2, Color.yellow);
         g2.dispose();
 
