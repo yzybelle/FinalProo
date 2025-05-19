@@ -14,6 +14,8 @@ public class GamePanel extends JPanel implements Runnable {
     // SCREEN SETTINGS
     final int originalTileSize = 16; //16x16 tile
     final int scale = 3;
+    public boolean gameOver;
+    public boolean canMove = true;
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
@@ -96,7 +98,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update() {
-        player.update();
+        player.update(canMove);
         attackShipOne.update();
         long currentTime = System.nanoTime();
         if (currentTime - lastProjectileTime >= 2_000_000_000L) {
@@ -108,12 +110,36 @@ public class GamePanel extends JPanel implements Runnable {
             attackSOPOne.get(i).update();
             attackSOPTwo.get(i).update();
         }
+        for (int i = 0; i < attackSOPTwo.size(); i++) {
+
+            attackSOPTwo.get(i).update();
+        }
+
 
             for (int j = 0; j < attackSOPTwo.size(); j++) {
                 if(general.collided(attackSOPTwo.get(j), player)){
                     System.out.println("temp");
+                    attackSOPTwo.remove(j);
+                    j--;
+                    player.damage(100);
+                    if (player.getHealth()<=0){
+                        canMove = false;
+                        gameOver=true;
+                    }
                 };
             }
+        for (int j = 0; j < attackSOPOne.size(); j++) {
+            if(general.collided(attackSOPOne.get(j), player)){
+                System.out.println("temp");
+                attackSOPOne.remove(j);
+                j--;
+                player.damage(10);
+                if (player.getHealth()<=0){
+                    canMove = false;
+                    gameOver=true;
+                }
+            };
+        }
 
 
 
@@ -127,6 +153,14 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g; // This changes Graphics to graphics 2d which allows for more functions
+        if (gameOver) {
+            g2.setColor(new Color(0, 0, 0, 0)); // semi-transparent overlay
+            g2.fillRect(0, 0, screenWidth, screenHeight);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Times New Roman", Font.BOLD, 100));
+            g2.drawString("GAME OVER", screenWidth / 2 - 200, screenHeight / 2);
+        }
+
         player.draw(g2);
         attackShipOne.draw(g2, Color.green);
         attackShipTwo.draw(g2, Color.yellow);

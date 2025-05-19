@@ -25,17 +25,28 @@ public class Player extends Entity{
         health = 100;
     }
 
-    public void update(){
-        if (keyH.upPressed){
-            y-=speed;
-        }
-        else if (keyH.downPressed) {
-            y+= speed;
-        } else if (keyH.rightPressed) {
-            x+= speed;
-        } else if (keyH.leftPressed) {
-            x-=speed;
-        }
+    public void update(boolean f){
+       if (f) {if (keyH.upPressed){
+           y-=speed;
+       }
+       else if (keyH.downPressed) {
+           y+= speed;
+       } else if (keyH.rightPressed) {
+           x+= speed;
+       } else if (keyH.leftPressed) {
+           x-=speed;
+       }}
+       else  {
+           if (keyH.upPressed){
+
+       }
+       else if (keyH.downPressed) {
+
+       } else if (keyH.rightPressed) {
+
+       } else if (keyH.leftPressed) {
+
+       }}
 
     }
 
@@ -45,10 +56,10 @@ public class Player extends Entity{
 
     }
 
-    //public void damage(int dam){
-    // health-=dam;
-    //
-    // }
+    public void damage(int dam){
+     health-=dam;
+
+     }
 
     public int getHealth(){
         return health;
