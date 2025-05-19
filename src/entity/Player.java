@@ -7,13 +7,12 @@ import main.KeyHandler;
 import java.awt.*;
 
 public class Player extends Entity{
-    GamePanel gp;
     KeyHandler keyH;
     int health;
     int lives;
 
     public Player(GamePanel gp, KeyHandler keyH){
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
         setDefaultValues();
     }

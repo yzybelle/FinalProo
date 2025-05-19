@@ -5,21 +5,19 @@ import main.GamePanel;
 import java.awt.*;
 
 public class AttackShips extends Entity {
-    GamePanel gp;
     private int check = 0;
     private int health;
     private int xPos;
-    private int yPos;
 
 
     public AttackShips(GamePanel gp){
-        this.gp = gp;
+        super(gp);
         this.speed = 2;
         setDefaultValues(300, 600);
     }
 
     public AttackShips(GamePanel gp, int x, int y){
-        this.gp = gp;
+        super(gp);
         health = 100;
         this.speed=2;
         setDefaultValues(x,y);

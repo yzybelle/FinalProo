@@ -5,14 +5,15 @@ import main.GamePanel;
 import java.awt.*;
 
 public class Projectiles extends Entity {
-    GamePanel gp;
     int shipXPos;
     int shipYPos;
 
 
-    public Projectiles(GamePanel gp, AttackShips attackShipOne) {
-        this.gp = gp;
+    public Projectiles(GamePanel gp, AttackShips attackShip) {
+        super(gp);
         this.speed = 4;
+        this.x = attackShip.x;
+        this.y = attackShip.y;
 
     }
 
