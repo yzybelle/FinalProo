@@ -1,10 +1,5 @@
 package main;
 
-import entity.AttackShips;
-import entity.Entity;
-import entity.Player;
-import entity.Projectiles;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,6 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
     public boolean gameOver;
     public boolean canMove = true;
+    public boolean AS1Alive = true;
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
@@ -34,9 +30,11 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     Entity general = new Entity(this);
     ArrayList<AttackShips> all = new ArrayList<AttackShips>();
+    ArrayList<PlayerAttacks> defense = new ArrayList<PlayerAttacks>();
     AttackShips attackShipTwo = new AttackShips(this, 300, 600);
     AttackShips attackShipOne = new AttackShips(this, 500, 600);
     Player player = new Player(this, keyH);
+
     // Set player's default position
 
     int playerX = 100;
@@ -70,9 +68,6 @@ public class GamePanel extends JPanel implements Runnable {
         //Create game loop
         while (gameThread != null) {
 
-            //this is the time
-            long currentTime = System.nanoTime();
-            System.out.println("current tune:" + currentTime);
 
             //Updates information such as character positions
             //Draw the screen with updated information
@@ -98,21 +93,25 @@ public class GamePanel extends JPanel implements Runnable {
 
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update() {
-        player.update(canMove);
+        player.update(canMove, defense, new PlayerAttacks(this,player));
         attackShipOne.update();
         long currentTime = System.nanoTime();
-        if (currentTime - lastProjectileTime >= 2_000_000_000L) {
+
+        if (currentTime - lastProjectileTime >= 2_000_000_000L) // 2 sec
+        {
             attackSOPOne.add(new Projectiles( this,attackShipOne));
             attackSOPTwo.add(new Projectiles(this, attackShipTwo));
             lastProjectileTime = currentTime;
         }
         for (int i = 0; i < attackSOPOne.size(); i++) {
             attackSOPOne.get(i).update();
-            attackSOPTwo.get(i).update();
         }
         for (int i = 0; i < attackSOPTwo.size(); i++) {
 
             attackSOPTwo.get(i).update();
+        }
+        for (int i = 0; i < defense.size(); i++) {
+            defense.get(i).update();
         }
 
 
@@ -122,10 +121,19 @@ public class GamePanel extends JPanel implements Runnable {
                     attackSOPTwo.remove(j);
                     j--;
                     player.damage(100);
-                    if (player.getHealth()<=0){
+                    if (player.getHealth()==0&& player.getLives()==0){
                         canMove = false;
                         gameOver=true;
+                        System.out.println("lives"+player.lives);
                     }
+                    else if (player.getHealth()==0&& player.getLives()>0){
+                        canMove = true;
+                        player.setHealth(100);
+                        player.changeLives(-1);
+                        System.out.println("lives"+player.lives);
+
+                    }
+
                 };
             }
         for (int j = 0; j < attackSOPOne.size(); j++) {
@@ -133,17 +141,40 @@ public class GamePanel extends JPanel implements Runnable {
                 System.out.println("temp");
                 attackSOPOne.remove(j);
                 j--;
-                player.damage(10);
-                if (player.getHealth()<=0){
+                player.damage(100);
+                if (player.getHealth()==0&& player.getLives()==0){
                     canMove = false;
                     gameOver=true;
+                    System.out.println("lives"+player.lives);
+
                 }
-            };
+                else if (player.getHealth()==0&& player.getLives()>0){
+                    canMove = true;
+                    player.setHealth(100);
+                    player.changeLives(-1);
+                    System.out.println("lives: "+player.lives);
+                    System.out.println("health: "+player.health);
+
+
+                }
+
+            }
+            for (int i = 0; i < defense.size(); i++) {
+                if(general.collided(defense.get(i), attackShipOne)){
+                    defense.remove(i);
+                    j--;
+                    attackShipOne.damage(100);
+                    if (attackShipOne.getHealth()<=0){
+                        AS1Alive=false;
+                    }
+
+                }
+            }
+
         }
 
 
 
-        System.out.println("AttackSOP XPOS:");
         attackShipTwo.update();
 
     }
@@ -157,12 +188,15 @@ public class GamePanel extends JPanel implements Runnable {
             g2.setColor(new Color(0, 0, 0, 0)); // semi-transparent overlay
             g2.fillRect(0, 0, screenWidth, screenHeight);
             g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Times New Roman", Font.BOLD, 100));
+            g2.setFont(new Font("Times New Roman", Font.BOLD, 50));
             g2.drawString("GAME OVER", screenWidth / 2 - 200, screenHeight / 2);
         }
 
         player.draw(g2);
-        attackShipOne.draw(g2, Color.green);
+        if(AS1Alive){
+            attackShipOne.draw(g2, Color.green);
+            }
+
         attackShipTwo.draw(g2, Color.yellow);
         for (Projectiles p : attackSOPOne) {
             p.draw(g2, Color.green);
@@ -170,6 +204,11 @@ public class GamePanel extends JPanel implements Runnable {
         for (Projectiles p : attackSOPTwo) {
             p.draw(g2, Color.yellow);
         }
+        for (PlayerAttacks p : defense) {
+            p.draw(g2, Color.yellow);
+        }
+
+
 
         g2.dispose();
 

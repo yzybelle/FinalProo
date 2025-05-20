@@ -1,24 +1,14 @@
-package entity;
-
-import main.GamePanel;
+package main;
 
 import java.awt.*;
 
 public class AttackShips extends Entity {
     private int check = 0;
     private int health;
-    private int xPos;
-
-
-    public AttackShips(GamePanel gp){
-        super(gp);
-        this.speed = 2;
-        setDefaultValues(300, 600);
-    }
 
     public AttackShips(GamePanel gp, int x, int y){
         super(gp);
-        health = 100;
+        this.health = 100;
         this.speed=2;
         setDefaultValues(x,y);
     }
@@ -41,6 +31,21 @@ public class AttackShips extends Entity {
         }
 
 
+    }
+    public void damage(int dam){
+        health-=dam;
+        if (health < 0) health = 0;
+    }
+
+
+
+    public int getHealth(){
+
+        return health;
+    }
+
+    public void setHealth(int h){
+        health = h;
     }
 
     public void draw(Graphics2D g2, Color color){

@@ -1,12 +1,9 @@
-package entity;
-
-import main.GamePanel;
+package main;
 
 import java.awt.*;
 
 public class Projectiles extends Entity {
-    int shipXPos;
-    int shipYPos;
+
 
 
     public Projectiles(GamePanel gp, AttackShips attackShip) {

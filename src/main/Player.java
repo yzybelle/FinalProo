@@ -1,12 +1,10 @@
-package entity;
+package main;
 
-
-import main.GamePanel;
-import main.KeyHandler;
 
 import java.awt.*;
+import java.util.ArrayList;
 
-public class Player extends Entity{
+public class Player extends Entity {
     KeyHandler keyH;
     int health;
     int lives;
@@ -25,7 +23,7 @@ public class Player extends Entity{
         health = 100;
     }
 
-    public void update(boolean f){
+    public void update(boolean f, ArrayList<PlayerAttacks> array, PlayerAttacks object){
        if (f) {if (keyH.upPressed){
            y-=speed;
        }
@@ -35,7 +33,12 @@ public class Player extends Entity{
            x+= speed;
        } else if (keyH.leftPressed) {
            x-=speed;
-       }}
+       }
+       else if (keyH.shoot) {
+           array.add(object);
+       }
+
+       }
        else  {
            if (keyH.upPressed){
 
@@ -58,15 +61,24 @@ public class Player extends Entity{
 
     public void damage(int dam){
      health-=dam;
-
+        if (health < 0) health = 0;
      }
 
+
+
     public int getHealth(){
+
         return health;
     }
 
+    public void setHealth(int h){
+        health = h;
+    }
     public int getLives(){
         return lives;
+    }
+    public void changeLives(int damage){
+        lives = lives+damage;
     }
 
 }
