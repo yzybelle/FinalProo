@@ -12,6 +12,7 @@ public class GamePanel extends JPanel implements Runnable {
     public boolean gameOver;
     public boolean canMove = true;
     public boolean AS1Alive = true;
+    public boolean AS2Alive = true;
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
@@ -31,7 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
     Entity general = new Entity(this);
     ArrayList<AttackShips> all = new ArrayList<AttackShips>();
     ArrayList<PlayerAttacks> defense = new ArrayList<PlayerAttacks>();
-    AttackShips attackShipTwo = new AttackShips(this, 300, 600);
+    AttackShips attackShipTwo = new AttackShips(this, 300, 800);
     AttackShips attackShipOne = new AttackShips(this, 500, 600);
     Player player = new Player(this, keyH);
 
@@ -94,13 +95,15 @@ public class GamePanel extends JPanel implements Runnable {
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update() {
         player.update(canMove, defense, new PlayerAttacks(this,player));
-        attackShipOne.update();
+      if (AS1Alive){
+          attackShipOne.update();}
+
         long currentTime = System.nanoTime();
 
         if (currentTime - lastProjectileTime >= 2_000_000_000L) // 2 sec
         {
-            attackSOPOne.add(new Projectiles( this,attackShipOne));
-            attackSOPTwo.add(new Projectiles(this, attackShipTwo));
+            if(AS1Alive){ attackSOPOne.add(new Projectiles( this,attackShipOne));}
+            if(AS2Alive){attackSOPTwo.add(new Projectiles(this, attackShipTwo));}
             lastProjectileTime = currentTime;
         }
         for (int i = 0; i < attackSOPOne.size(); i++) {
@@ -116,7 +119,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
             for (int j = 0; j < attackSOPTwo.size(); j++) {
-                if(general.collided(attackSOPTwo.get(j), player)){
+                if(general.collided(attackSOPTwo.get(j), player)&&AS2Alive){
                     System.out.println("temp");
                     attackSOPTwo.remove(j);
                     j--;
@@ -137,7 +140,7 @@ public class GamePanel extends JPanel implements Runnable {
                 };
             }
         for (int j = 0; j < attackSOPOne.size(); j++) {
-            if(general.collided(attackSOPOne.get(j), player)){
+            if(general.collided(attackSOPOne.get(j), player)&&AS1Alive){
                 System.out.println("temp");
                 attackSOPOne.remove(j);
                 j--;
@@ -159,10 +162,22 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
             }
+
             for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), attackShipOne)){
+                if(general.collided(defense.get(i), attackShipTwo)&&AS2Alive){
                     defense.remove(i);
-                    j--;
+                    i--;
+                    attackShipTwo.damage(100);
+                    if (attackShipTwo.getHealth()<=0){
+                        AS2Alive=false;
+                    }
+
+                }
+            }
+            for (int i = 0; i < defense.size(); i++) {
+                if(general.collided(defense.get(i), attackShipOne)&&AS1Alive){
+                    defense.remove(i);
+                    i--;
                     attackShipOne.damage(100);
                     if (attackShipOne.getHealth()<=0){
                         AS1Alive=false;
@@ -174,8 +189,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
+        if(AS2Alive){attackShipTwo.update();}
 
-        attackShipTwo.update();
 
     }
 
@@ -195,15 +210,21 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2);
         if(AS1Alive){
             attackShipOne.draw(g2, Color.green);
+            for (Projectiles p : attackSOPOne) {
+                p.draw(g2, Color.green);
+            }
+            }
+        if(AS2Alive){
+            attackShipTwo.draw(g2, Color.yellow);
+            for (Projectiles p : attackSOPTwo) {
+                p.draw(g2, Color.yellow);
             }
 
-        attackShipTwo.draw(g2, Color.yellow);
-        for (Projectiles p : attackSOPOne) {
-            p.draw(g2, Color.green);
         }
-        for (Projectiles p : attackSOPTwo) {
-            p.draw(g2, Color.yellow);
-        }
+
+
+
+
         for (PlayerAttacks p : defense) {
             p.draw(g2, Color.yellow);
         }
