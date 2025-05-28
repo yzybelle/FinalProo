@@ -11,8 +11,8 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
     public boolean gameOver;
     public boolean canMove = true;
-    public boolean AS1Alive = true;
-    public boolean AS2Alive = true;
+
+
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
     final int maxScreenCol = 16;
@@ -30,10 +30,11 @@ public class GamePanel extends JPanel implements Runnable {
     //TO create time, or a game clock we use a class called Thread
     Thread gameThread;
     Entity general = new Entity(this);
-    ArrayList<AttackShips> all = new ArrayList<AttackShips>();
+    ArrayList<AttackShips> roundOne = new ArrayList<AttackShips>();
     ArrayList<PlayerAttacks> defense = new ArrayList<PlayerAttacks>();
     AttackShips attackShipTwo = new AttackShips(this, 300, 800);
     AttackShips attackShipOne = new AttackShips(this, 500, 600);
+    AttackShips nextButton = new AttackShips(this, screenWidth/2, screenHeight/2);
     Player player = new Player(this, keyH);
 
     // Set player's default position
@@ -62,8 +63,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        all.add(attackShipOne);
-        all.add(attackShipTwo);
+
+        roundOne.add(attackShipOne);
+        roundOne.add(attackShipTwo);
         double drawInterval = 1000000000 / FPS; // .0166666 seconds
         double nextDrawTime = System.nanoTime() + drawInterval;
         //Create game loop
@@ -94,16 +96,19 @@ public class GamePanel extends JPanel implements Runnable {
 
     //This method "updates" the screen, like how a game runs and changes frames at 20 FPS
     public void update() {
+
         player.update(canMove, defense, new PlayerAttacks(this,player));
-      if (AS1Alive){
+      if (attackShipOne.isAlive()){
           attackShipOne.update();}
 
         long currentTime = System.nanoTime();
 
         if (currentTime - lastProjectileTime >= 2_000_000_000L) // 2 sec
         {
-            if(AS1Alive){ attackSOPOne.add(new Projectiles( this,attackShipOne));}
-            if(AS2Alive){attackSOPTwo.add(new Projectiles(this, attackShipTwo));}
+            if(attackShipOne.isAlive()){
+                attackSOPOne.add(new Projectiles( this,attackShipOne));}
+            if(attackShipTwo.isAlive()){
+                attackSOPTwo.add(new Projectiles(this, attackShipTwo));}
             lastProjectileTime = currentTime;
         }
         for (int i = 0; i < attackSOPOne.size(); i++) {
@@ -119,68 +124,43 @@ public class GamePanel extends JPanel implements Runnable {
 
 
             for (int j = 0; j < attackSOPTwo.size(); j++) {
-                if(general.collided(attackSOPTwo.get(j), player)&&AS2Alive){
+                if(general.collided(attackSOPTwo.get(j), player)&&attackShipTwo.isAlive()){
                     System.out.println("temp");
                     attackSOPTwo.remove(j);
                     j--;
-                    player.damage(100);
-                    if (player.getHealth()==0&& player.getLives()==0){
-                        canMove = false;
-                        gameOver=true;
-                        System.out.println("lives"+player.lives);
-                    }
-                    else if (player.getHealth()==0&& player.getLives()>0){
-                        canMove = true;
-                        player.setHealth(100);
-                        player.changeLives(-1);
-                        System.out.println("lives"+player.lives);
-
-                    }
+                    takeHit(player,100);
 
                 };
             }
         for (int j = 0; j < attackSOPOne.size(); j++) {
-            if(general.collided(attackSOPOne.get(j), player)&&AS1Alive){
+            if(general.collided(attackSOPOne.get(j), player)&&attackShipOne.isAlive()){
                 System.out.println("temp");
                 attackSOPOne.remove(j);
                 j--;
-                player.damage(100);
-                if (player.getHealth()==0&& player.getLives()==0){
-                    canMove = false;
-                    gameOver=true;
-                    System.out.println("lives"+player.lives);
-
-                }
-                else if (player.getHealth()==0&& player.getLives()>0){
-                    canMove = true;
-                    player.setHealth(100);
-                    player.changeLives(-1);
-                    System.out.println("lives: "+player.lives);
-                    System.out.println("health: "+player.health);
-
-
-                }
+                takeHit(player,100);
 
             }
 
             for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), attackShipTwo)&&AS2Alive){
+                if(general.collided(defense.get(i), attackShipTwo)&&attackShipTwo.isAlive()){
                     defense.remove(i);
                     i--;
                     attackShipTwo.damage(100);
                     if (attackShipTwo.getHealth()<=0){
-                        AS2Alive=false;
+                        attackShipTwo.setAlive(false);
+                        roundOne.remove(attackShipTwo);
                     }
 
                 }
             }
             for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), attackShipOne)&&AS1Alive){
+                if(general.collided(defense.get(i), attackShipOne)&&attackShipOne.isAlive()){
                     defense.remove(i);
                     i--;
                     attackShipOne.damage(100);
                     if (attackShipOne.getHealth()<=0){
-                        AS1Alive=false;
+                        attackShipOne.setAlive(false);
+                        roundOne.remove(attackShipOne);
                     }
 
                 }
@@ -189,7 +169,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
-        if(AS2Alive){attackShipTwo.update();}
+        if(attackShipTwo.isAlive()){
+            attackShipTwo.update();}
 
 
     }
@@ -207,14 +188,39 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawString("GAME OVER", screenWidth / 2 - 200, screenHeight / 2);
         }
 
+        if(roundOne.isEmpty()){
+            g2.setColor(new Color(0, 0, 0, 0)); // semi-transparent overlay
+            g2.fillRect(0, 0, screenWidth, screenHeight);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Times New Roman", Font.BOLD, 50));
+            g2.drawString("You won round one!", screenWidth / 2 - 240, screenHeight / 2);
+            if (nextButton.isAlive()){
+                nextButton.draw(g2,Color.BLACK);
+            }
+
+            for (int i = 0; i < defense.size(); i++) {
+                if(general.collided(defense.get(i), nextButton)){
+                    defense.remove(i);
+                    i--;
+                    nextButton.damage(1000);
+                    if (nextButton.getHealth()<=0){
+                        nextButton.setAlive(false);
+                    }
+
+
+                }
+            }
+
+        }
+
         player.draw(g2);
-        if(AS1Alive){
+        if(attackShipOne.isAlive()){
             attackShipOne.draw(g2, Color.green);
             for (Projectiles p : attackSOPOne) {
                 p.draw(g2, Color.green);
             }
             }
-        if(AS2Alive){
+        if(attackShipTwo.isAlive()){
             attackShipTwo.draw(g2, Color.yellow);
             for (Projectiles p : attackSOPTwo) {
                 p.draw(g2, Color.yellow);
@@ -230,9 +236,34 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
-
         g2.dispose();
 
 
     }
+    public void takeHit(Player player, int num){
+        player.damage(num);
+        if (player.getHealth()==0&& player.getLives()==0){
+            canMove = false;
+            gameOver=true;
+            System.out.println("lives"+player.lives);
+        }
+        else if (player.getHealth()==0&& player.getLives()>0){
+            canMove = true;
+            player.setHealth(100);
+            player.changeLives(-1);
+            System.out.println("lives"+player.lives);
+
+        }
+    }
+
+    public void roundOneGo(){
+
+
+    }
+
+    public void roundTwoGo(){}
+
+    public void roundThreeGo(){}
+
+
 }

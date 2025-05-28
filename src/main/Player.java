@@ -24,7 +24,8 @@ public class Player extends Entity {
     }
 
     public void update(boolean f, ArrayList<PlayerAttacks> array, PlayerAttacks object){
-       if (f) {if (keyH.upPressed){
+       if (f)
+       {if (keyH.upPressed){
            y-=speed;
        }
        else if (keyH.downPressed) {
