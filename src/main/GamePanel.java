@@ -11,6 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
     public boolean gameOver;
     public boolean canMove = true;
+    public int currentRound=1;
 
 
 
@@ -30,10 +31,19 @@ public class GamePanel extends JPanel implements Runnable {
     //TO create time, or a game clock we use a class called Thread
     Thread gameThread;
     Entity general = new Entity(this);
-    ArrayList<AttackShips> roundOne = new ArrayList<AttackShips>();
+    ArrayList<AttackShips> roundGenerator = new ArrayList<AttackShips>();
     ArrayList<PlayerAttacks> defense = new ArrayList<PlayerAttacks>();
+
+
     AttackShips attackShipTwo = new AttackShips(this, 300, 800);
     AttackShips attackShipOne = new AttackShips(this, 500, 600);
+
+    AttackShips attackShipThree = new AttackShips(this, 300, 800);
+    AttackShips attackShipFour = new AttackShips(this, 500, 600);
+    AttackShips attackShipFive = new AttackShips(this, 300, 800);
+    AttackShips attackShipSix= new AttackShips(this, 500, 600);
+
+
     AttackShips nextButton = new AttackShips(this, screenWidth/2, screenHeight/2);
     Player player = new Player(this, keyH);
 
@@ -45,6 +55,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     public ArrayList<Projectiles> attackSOPOne = new ArrayList<>();
     public ArrayList<Projectiles> attackSOPTwo = new ArrayList<>();
+    public ArrayList<Projectiles> attackSOPThree = new ArrayList<>();
+    public ArrayList<Projectiles> attackSOPFour = new ArrayList<>();
+    public ArrayList<Projectiles> attackSOPFive = new ArrayList<>();
+    public ArrayList<Projectiles> attackSOPSix = new ArrayList<>();
 
 
     public GamePanel() {
@@ -56,16 +70,33 @@ public class GamePanel extends JPanel implements Runnable {
         this.requestFocusInWindow();
     }
 
+
+    public void attackShipGenerator(int round){
+        if(currentRound==1){
+            roundGenerator.add(attackShipOne);
+            roundGenerator.add(attackShipTwo);
+
+        }
+        else if (currentRound==2){
+            roundGenerator.add(attackShipThree);
+            roundGenerator.add(attackShipFour);
+            roundGenerator.add(attackShipFive);
+            roundGenerator.add(attackShipSix);
+        }
+
+
+    }
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+        attackShipGenerator(currentRound);
+
     }
 
     @Override
     public void run() {
 
-        roundOne.add(attackShipOne);
-        roundOne.add(attackShipTwo);
+
         double drawInterval = 1000000000 / FPS; // .0166666 seconds
         double nextDrawTime = System.nanoTime() + drawInterval;
         //Create game loop
@@ -98,8 +129,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
 
         player.update(canMove, defense, new PlayerAttacks(this,player));
-      if (attackShipOne.isAlive()){
-          attackShipOne.update();}
+        for (int i = 0; i < defense.size(); i++) {
+            defense.get(i).update();
+        }
 
         long currentTime = System.nanoTime();
 
@@ -109,8 +141,37 @@ public class GamePanel extends JPanel implements Runnable {
                 attackSOPOne.add(new Projectiles( this,attackShipOne));}
             if(attackShipTwo.isAlive()){
                 attackSOPTwo.add(new Projectiles(this, attackShipTwo));}
+
+
+            if(attackShipThree.isAlive()){
+                attackSOPThree.add(new Projectiles( this,attackShipThree));}
+            if(attackShipFour.isAlive()){
+                attackSOPFour.add(new Projectiles(this, attackShipFour));}
+            if(attackShipFive.isAlive()){
+                attackSOPFive.add(new Projectiles( this,attackShipFive));}
+            if(attackShipSix.isAlive()){
+                attackSOPSix.add(new Projectiles(this, attackShipSix));}
+
+
+
             lastProjectileTime = currentTime;
         }
+
+        if (attackShipOne.isAlive()){
+            attackShipOne.update();}
+        if(attackShipTwo.isAlive()){
+            attackShipTwo.update();}
+        if (attackShipThree.isAlive()){
+            attackShipThree.update();}
+        if(attackShipFour.isAlive()){
+            attackShipFour.update();}
+        if (attackShipFive.isAlive()){
+            attackShipFive.update();}
+        if(attackShipSix.isAlive()){
+            attackShipSix.update();}
+
+
+
         for (int i = 0; i < attackSOPOne.size(); i++) {
             attackSOPOne.get(i).update();
         }
@@ -118,9 +179,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             attackSOPTwo.get(i).update();
         }
-        for (int i = 0; i < defense.size(); i++) {
-            defense.get(i).update();
-        }
+
 
 
             for (int j = 0; j < attackSOPTwo.size(); j++) {
@@ -148,7 +207,7 @@ public class GamePanel extends JPanel implements Runnable {
                     attackShipTwo.damage(100);
                     if (attackShipTwo.getHealth()<=0){
                         attackShipTwo.setAlive(false);
-                        roundOne.remove(attackShipTwo);
+                        roundGenerator.remove(attackShipTwo);
                     }
 
                 }
@@ -160,7 +219,7 @@ public class GamePanel extends JPanel implements Runnable {
                     attackShipOne.damage(100);
                     if (attackShipOne.getHealth()<=0){
                         attackShipOne.setAlive(false);
-                        roundOne.remove(attackShipOne);
+                        roundGenerator.remove(attackShipOne);
                     }
 
                 }
@@ -169,8 +228,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
 
-        if(attackShipTwo.isAlive()){
-            attackShipTwo.update();}
+
 
 
     }
@@ -188,7 +246,7 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawString("GAME OVER", screenWidth / 2 - 200, screenHeight / 2);
         }
 
-        if(roundOne.isEmpty()){
+        if(roundGenerator.isEmpty()){
             g2.setColor(new Color(0, 0, 0, 0)); // semi-transparent overlay
             g2.fillRect(0, 0, screenWidth, screenHeight);
             g2.setColor(Color.WHITE);
@@ -230,7 +288,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 
 
-
         for (PlayerAttacks p : defense) {
             p.draw(g2, Color.yellow);
         }
@@ -257,7 +314,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void roundOneGo(){
-
 
     }
 
