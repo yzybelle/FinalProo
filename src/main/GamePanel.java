@@ -137,20 +137,21 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (currentTime - lastProjectileTime >= 2_000_000_000L) // 2 sec
         {
-            if(attackShipOne.isAlive()){
+
+            if(currentRound==1){if(attackShipOne.isAlive()){
                 attackSOPOne.add(new Projectiles( this,attackShipOne));}
-            if(attackShipTwo.isAlive()){
-                attackSOPTwo.add(new Projectiles(this, attackShipTwo));}
+                if(attackShipTwo.isAlive()){
+                    attackSOPTwo.add(new Projectiles(this, attackShipTwo));}}
 
-
-            if(attackShipThree.isAlive()){
+            else if (currentRound==2){if(attackShipThree.isAlive()){
                 attackSOPThree.add(new Projectiles( this,attackShipThree));}
-            if(attackShipFour.isAlive()){
-                attackSOPFour.add(new Projectiles(this, attackShipFour));}
-            if(attackShipFive.isAlive()){
-                attackSOPFive.add(new Projectiles( this,attackShipFive));}
-            if(attackShipSix.isAlive()){
-                attackSOPSix.add(new Projectiles(this, attackShipSix));}
+                if(attackShipFour.isAlive()){
+                    attackSOPFour.add(new Projectiles(this, attackShipFour));}
+                if(attackShipFive.isAlive()){
+                    attackSOPFive.add(new Projectiles( this,attackShipFive));}
+                if(attackShipSix.isAlive()){
+                    attackSOPSix.add(new Projectiles(this, attackShipSix));}
+            }
 
 
 
@@ -171,14 +172,16 @@ public class GamePanel extends JPanel implements Runnable {
             attackShipSix.update();}
 
 
+        if(currentRound==1){
 
-        for (int i = 0; i < attackSOPOne.size(); i++) {
+
+            for (int i = 0; i < attackSOPOne.size(); i++) {
             attackSOPOne.get(i).update();
         }
-        for (int i = 0; i < attackSOPTwo.size(); i++) {
+            for (int i = 0; i < attackSOPTwo.size(); i++) {
 
-            attackSOPTwo.get(i).update();
-        }
+                attackSOPTwo.get(i).update();
+            }
 
 
 
@@ -191,41 +194,111 @@ public class GamePanel extends JPanel implements Runnable {
 
                 };
             }
-        for (int j = 0; j < attackSOPOne.size(); j++) {
-            if(general.collided(attackSOPOne.get(j), player)&&attackShipOne.isAlive()){
-                System.out.println("temp");
-                attackSOPOne.remove(j);
-                j--;
-                takeHit(player,100);
-
-            }
-
-            for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), attackShipTwo)&&attackShipTwo.isAlive()){
-                    defense.remove(i);
-                    i--;
-                    attackShipTwo.damage(100);
-                    if (attackShipTwo.getHealth()<=0){
-                        attackShipTwo.setAlive(false);
-                        roundGenerator.remove(attackShipTwo);
-                    }
+            for (int j = 0; j < attackSOPOne.size(); j++) {
+                if(general.collided(attackSOPOne.get(j), player)&&attackShipOne.isAlive()){
+                    System.out.println("temp");
+                    attackSOPOne.remove(j);
+                    j--;
+                    takeHit(player,100);
 
                 }
-            }
-            for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), attackShipOne)&&attackShipOne.isAlive()){
-                    defense.remove(i);
-                    i--;
-                    attackShipOne.damage(100);
-                    if (attackShipOne.getHealth()<=0){
-                        attackShipOne.setAlive(false);
-                        roundGenerator.remove(attackShipOne);
+
+                for (int i = 0; i < defense.size(); i++) {
+                    if(general.collided(defense.get(i), attackShipTwo)&&attackShipTwo.isAlive()){
+                        defense.remove(i);
+                        i--;
+                        attackShipTwo.damage(100);
+                        if (attackShipTwo.getHealth()<=0){
+                            attackShipTwo.setAlive(false);
+                            roundGenerator.remove(attackShipTwo);
+                        }
+
+
                     }
+                }
+                for (int i = 0; i < defense.size(); i++) {
+                    if(general.collided(defense.get(i), attackShipOne)&&attackShipOne.isAlive()){
+                        defense.remove(i);
+                        i--;
+                        attackShipOne.damage(100);
+                        if (attackShipOne.getHealth()<=0){
+                            attackShipOne.setAlive(false);
+                            roundGenerator.remove(attackShipOne);
+                        }
+
+                    }
+                }
+
+            }}
+
+        if(currentRound==2){
+
+
+            for (int i = 0; i < attackSOPThree.size(); i++) {
+                attackSOPThree.get(i).update();
+            }
+            for (int i = 0; i < attackSOPFour.size(); i++) {
+
+                attackSOPFour.get(i).update();
+            }
+            for (int i = 0; i < attackSOPFive.size(); i++) {
+                attackSOPFive.get(i).update();
+            }
+            for (int i = 0; i < attackSOPSix.size(); i++) {
+
+                attackSOPSix.get(i).update();
+            }
+
+
+
+            for (int j = 0; j < attackSOPThree.size(); j++) {
+                if(general.collided(attackSOPThree.get(j), player)&&attackShipThree.isAlive()){
+                    System.out.println("temp");
+                    attackSOPThree.remove(j);
+                    j--;
+                    takeHit(player,100);
+
+                };
+            }
+            for (int j = 0; j < attackSOPFour.size(); j++) {
+
+                if(general.collided(attackSOPFour.get(j), player)&&attackShipFour.isAlive()){
+                    System.out.println("temp");
+                    attackSOPFour.remove(j);
+                    j--;
+                    takeHit(player,100);
 
                 }
-            }
 
-        }
+                for (int i = 0; i < defense.size(); i++) {
+                    if(general.collided(defense.get(i), attackShipThree)&&attackShipThree.isAlive()){
+                        defense.remove(i);
+                        i--;
+                        attackShipThree.damage(100);
+                        if (attackShipThree.getHealth()<=0){
+                            attackShipThree.setAlive(false);
+                            roundGenerator.remove(attackShipThree);
+                        }
+
+
+
+                    }
+                }
+                for (int i = 0; i < defense.size(); i++) {
+                    if(general.collided(defense.get(i), attackShipFour)&&attackShipFour.isAlive()){
+                        defense.remove(i);
+                        i--;
+                        attackShipFour.damage(100);
+                        if (attackShipFour.getHealth()<=0){
+                            attackShipFour.setAlive(false);
+                            roundGenerator.remove(attackShipFour);
+                        }
+
+                    }
+                }
+
+            }}
+
 
 
 
