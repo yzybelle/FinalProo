@@ -1,6 +1,7 @@
 package main;
 
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -8,11 +9,13 @@ public class Player extends Entity {
     KeyHandler keyH;
     int health;
     int lives;
+    private Image player;
 
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp);
         this.keyH = keyH;
         setDefaultValues();
+        player = new ImageIcon("main/player.png").getImage();
     }
 
     public void setDefaultValues(){
@@ -58,8 +61,7 @@ public class Player extends Entity {
     }
 
     public void draw(Graphics2D g2){
-        g2.setColor(Color.GRAY);
-        g2.fillRect(x,y,gp.tileSize,gp.tileSize);
+        g2.drawImage(player, x, y, gp.tileSize, gp.tileSize, null);
 
     }
 
