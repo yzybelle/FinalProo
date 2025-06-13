@@ -15,7 +15,7 @@ public class Player extends Entity {
         super(gp);
         this.keyH = keyH;
         setDefaultValues();
-        player = new ImageIcon("main/player.png").getImage();
+        player = new ImageIcon("res/player.png").getImage();
     }
 
     public void setDefaultValues(){

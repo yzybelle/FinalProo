@@ -1,11 +1,13 @@
 package main;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class AttackShips extends Entity {
     private int check = 0;
     private int health;
     private boolean isAlive;
+    private Image ship;
 
     public AttackShips(GamePanel gp, int x, int y){
         super(gp);
@@ -13,6 +15,7 @@ public class AttackShips extends Entity {
         this.speed=2;
         this.isAlive = true;
         setDefaultValues(x,y);
+        ship = new ImageIcon("res/attackShip.png").getImage();
     }
     public void setDefaultValues(int x, int y){
         this.x = x;
@@ -51,8 +54,7 @@ public class AttackShips extends Entity {
     }
 
     public void draw(Graphics2D g2, Color color){
-        g2.setColor(color);
-        g2.fillRect(x,y,gp.tileSize,gp.tileSize);
+        g2.drawImage(ship, x, y, gp.tileSize, gp.tileSize, null);
 
     }
 

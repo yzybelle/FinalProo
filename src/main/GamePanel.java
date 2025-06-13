@@ -12,6 +12,7 @@ public class GamePanel extends JPanel implements Runnable {
     public boolean gameOver;
     public boolean canMove = true;
     public int currentRound=1;
+    private ImageIcon space;
 
 
 
@@ -44,7 +45,7 @@ public class GamePanel extends JPanel implements Runnable {
     AttackShips attackShipSix= new AttackShips(this, 500, 600);
 
 
-    AttackShips nextButton = new AttackShips(this, screenWidth/2, screenHeight/2);
+
     Player player = new Player(this, keyH);
 
     // Set player's default position
@@ -63,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.MAGENTA); //Sets BackGround Color
+        space = new ImageIcon("res/space.gif");
         this.setDoubleBuffered(true); //Better rendering??? idk
         this.setFocusable((true)); //sets GamePanel to be "focused" to receive key input
         this.addKeyListener(keyH);
@@ -187,7 +188,7 @@ public class GamePanel extends JPanel implements Runnable {
                 System.out.println("temp");
                 attackSOPTwo.remove(j);
                 j--;
-                takeHit(player,100);
+                takeHit(player,10);
 
             };
         }
@@ -196,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
                 System.out.println("temp");
                 attackSOPOne.remove(j);
                 j--;
-                takeHit(player,100);
+                takeHit(player,10);
 
             }
 
@@ -204,7 +205,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if(general.collided(defense.get(i), attackShipTwo)&&attackShipTwo.isAlive()){
                     defense.remove(i);
                     i--;
-                    attackShipTwo.damage(100);
+                    attackShipTwo.damage(10);
                     if (attackShipTwo.getHealth()<=0){
                         attackShipTwo.setAlive(false);
                         roundGenerator.remove(attackShipTwo);
@@ -216,7 +217,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if(general.collided(defense.get(i), attackShipOne)&&attackShipOne.isAlive()){
                     defense.remove(i);
                     i--;
-                    attackShipOne.damage(100);
+                    attackShipOne.damage(10);
                     if (attackShipOne.getHealth()<=0){
                         attackShipOne.setAlive(false);
                         roundGenerator.remove(attackShipOne);
@@ -237,6 +238,8 @@ public class GamePanel extends JPanel implements Runnable {
     // Graphics class draws objects on screen
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(space.getImage(), 0, 0, screenWidth, screenHeight, this);
+
         Graphics2D g2 = (Graphics2D) g; // This changes Graphics to graphics 2d which allows for more functions
         if (gameOver) {
             g2.setColor(new Color(0, 0, 0, 0)); // semi-transparent overlay
@@ -252,22 +255,9 @@ public class GamePanel extends JPanel implements Runnable {
             g2.setColor(Color.WHITE);
             g2.setFont(new Font("Times New Roman", Font.BOLD, 50));
             g2.drawString("You won round one!", screenWidth / 2 - 240, screenHeight / 2);
-            if (nextButton.isAlive()){
-                nextButton.draw(g2,Color.BLACK);
-            }
-
-            for (int i = 0; i < defense.size(); i++) {
-                if(general.collided(defense.get(i), nextButton)){
-                    defense.remove(i);
-                    i--;
-                    nextButton.damage(1000);
-                    if (nextButton.getHealth()<=0){
-                        nextButton.setAlive(false);
-                    }
 
 
-                }
-            }
+
 
         }
 
@@ -313,13 +303,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void roundOneGo(){
-
-    }
-
-    public void roundTwoGo(){}
-
-    public void roundThreeGo(){}
 
 
 }
